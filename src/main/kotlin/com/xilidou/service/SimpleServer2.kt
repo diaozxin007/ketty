@@ -3,7 +3,6 @@ package com.xilidou.service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
-import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
@@ -42,13 +41,7 @@ class SimpleServer2 {
                 if (key.isAcceptable) {
                     val channel = key.channel() as ServerSocketChannel
                     val socketChannel = channel.accept()
-                    socketChannel.configureBlocking(false)
-                    nioLoop.register(socketChannel,nioLoop)
-                    //给客户端的channel设置可读事件
-                    logger.info("客户端在main函数中连接成功！")
-                    //连接成功之后，用客户端的channel写回一条消息
-                    socketChannel.write(ByteBuffer.wrap("我发送成功了".toByteArray()))
-                    logger.info("main函数服务器向客户端发送数据成功！")
+                    workerGroup.register(socketChannel,workerGroup.next())
                 }
             }
         }

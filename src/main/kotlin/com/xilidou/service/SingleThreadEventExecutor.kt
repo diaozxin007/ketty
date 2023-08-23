@@ -11,7 +11,7 @@ import java.util.concurrent.RejectedExecutionHandler
 import java.util.concurrent.ThreadPoolExecutor.AbortPolicy
 
 
-abstract class SingleThreadEventExecutor() :Executor{
+abstract class SingleThreadEventExecutor() :EventExecutor,Executor{
 
     private val DEFAULT_MAX_PENDING_TASKS = Int.MAX_VALUE
 
@@ -52,7 +52,7 @@ abstract class SingleThreadEventExecutor() :Executor{
 
     override fun execute(task: Runnable) {
         addTask(task)
-        startThread()
+        this@SingleThreadEventExecutor.run()
     }
 
     fun addTask(task:Runnable){
